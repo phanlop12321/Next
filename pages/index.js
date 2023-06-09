@@ -25,47 +25,36 @@ export default function IndexPage(){
   }
 
 
-  const delData = () => {
-    // fetch('http://localhost:8080/delete',{
-    //   method: 'POST',
-    //   headers:{
-    //     "Content-Type":"application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     ID: id, 
-    //   }),
-    // })
+  const delData = (id) => {
+    console.log(id)
+    fetch('http://localhost:8080/delete',{
+      method: 'POST',
+      headers:{
+        "Content-Type":"application/json",
+      },
+      body: JSON.stringify({
+        ID: id, 
+      }),
+    })
+    .then(() => loadList())
   }
     const addData = () => {
       if (inputValue !== '' || inputMoney !== 0 ){
-        if (inputStatus === false){
-          fetch('http://localhost:8080/createexpenses',{
-            method: 'POST',
-            headers:{
-              "Content-Type":"application/json",
-            },
-            body: JSON.stringify({
-              IDuser: "2", 
-              Description: inputValue,
-              Money: parseInt(inputMoney),
-              // status: {inputStatus},
-            }),
-          })
-          .then(() => loadList())
-        }else{
-          fetch('http://localhost:8080/createincome',{
-            method: 'POST',
-            headers:{
-              "Content-Type":"application/json",
-            },
-            body: JSON.stringify({
-              IDuser: "2", 
-              Description: inputValue,
-              Money: parseInt(inputMoney),
-            }),
-          })
-          .then(() => loadList())
-        }
+        const type = inputStatus == false ? 'createexpenses' : 'createincome'
+        fetchApi(type,{
+          method: 'POST',
+          headers:{
+            "Content-Type":"application/json",
+          },
+          body: JSON.stringify({
+            IDuser: "2", 
+            Description: inputValue,
+            Money: parseInt(inputMoney),
+            // status: {inputStatus},
+          }),
+        })
+        .then(() => loadList())
+       
         setInputValue('')
         setInputMoney('')
     }
@@ -188,8 +177,10 @@ export default function IndexPage(){
                 <div key={data.ID} className=" shadow-2xl bg-green-50 rounded-2xl text-base p-5 mt-4">
                   <div>{data.Description}</div>
                   <div>{data.Money} บาท
-                  <button className=" bg-red-500 ml-4 p-0 text-sm rounded-sm"
-                  onClick={delData}>
+                  <button className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-2 text-sm border border-red-500 hover:border-transparent rounded"
+                  onClick={(event) => (
+                    delData(data.ID)
+                  ) }>
                     ลบ</button>
                   </div>
               </div>
@@ -203,8 +194,10 @@ export default function IndexPage(){
                 <div key={data.ID} className=" shadow-2xl bg-red-50 rounded-2xl text-base p-5 mt-4">
                <div>{data.Description}</div>
                   <div>{data.Money} บาท
-                  <button className=" bg-red-500 ml-4 p-0 text-sm rounded-sm"
-                  onClick={delData}>
+                  <button className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-2 text-sm border border-red-500 hover:border-transparent rounded"
+                  onClick={(event) => (
+                    delData(data.ID)
+                  ) }>
                     ลบ</button></div>
               </div>
               )
